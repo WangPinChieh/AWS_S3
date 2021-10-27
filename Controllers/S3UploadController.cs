@@ -22,12 +22,7 @@ namespace AWS_S3.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            await _amazonS3.PutObjectAsync(new PutObjectRequest
-            {
-                InputStream = file.OpenReadStream(),
-                BucketName = _bucketName,
-                Key = file.FileName
-            });
+            await _amazonS3.UploadObjectFromStreamAsync(_bucketName, file.FileName, file.OpenReadStream(), null, CancellationToken.None);
             return Ok();
         }
 
@@ -36,6 +31,13 @@ namespace AWS_S3.Controllers
         {
             var files = await _amazonS3.ListObjectsAsync(_bucketName, CancellationToken.None);
             return Ok(files);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFile(string fileName)
+        {
+            var result = await _amazonS3.DeleteObjectAsync(_bucketName, fileName);
+            return Ok(result);
         }
     }
 }

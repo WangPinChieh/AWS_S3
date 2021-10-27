@@ -22,7 +22,7 @@ namespace AWS_S3.Controllers
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            await _amazonS3.UploadObjectFromStreamAsync(_bucketName, file.FileName, file.OpenReadStream(), null, CancellationToken.None);
+            await _amazonS3.UploadObjectFromStreamAsync(_bucketName, $"photos/{file.FileName}", file.OpenReadStream(), null, CancellationToken.None);
             return Ok();
         }
 

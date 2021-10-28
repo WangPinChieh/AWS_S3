@@ -5,6 +5,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 
 namespace AWS_S3.Controllers
 {
@@ -19,10 +20,12 @@ namespace AWS_S3.Controllers
         {
             _amazonS3 = amazonS3;
         }
+
         [HttpPost]
         public async Task<IActionResult> Upload(IFormFile file)
         {
-            await _amazonS3.UploadObjectFromStreamAsync(_bucketName, $"photos/{file.FileName}", file.OpenReadStream(), null, CancellationToken.None);
+            await _amazonS3.UploadObjectFromStreamAsync(_bucketName, $"photos/{file.FileName}", file.OpenReadStream(),
+                null, CancellationToken.None);
             return Ok();
         }
 
@@ -38,6 +41,14 @@ namespace AWS_S3.Controllers
         {
             var result = await _amazonS3.DeleteObjectAsync(_bucketName, fileName);
             return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetFile(string fileName)
+        {
+            var result = await _amazonS3.GetObjectAsync(_bucketName, fileName, CancellationToken.None);
+            Response.Headers.Add("Content-Disposition", $"attachment; filename=\"{fileName}\"");
+            return new FileStreamResult(result.ResponseStream, "application/octet-stream");
         }
     }
 }

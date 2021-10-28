@@ -1,11 +1,8 @@
-﻿using System.IO;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Amazon.S3;
-using Amazon.S3.Model;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Net.Http.Headers;
 
 namespace AWS_S3.Controllers
 {
@@ -14,7 +11,7 @@ namespace AWS_S3.Controllers
     public class S3UploadController : ControllerBase
     {
         private readonly IAmazonS3 _amazonS3;
-        private string _bucketName = "mycoreapibucket";
+        private readonly string _bucketName = "mycoreapibucket";
 
         public S3UploadController(IAmazonS3 amazonS3)
         {

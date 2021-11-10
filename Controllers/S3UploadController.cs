@@ -25,6 +25,19 @@ namespace AWS_S3.Controllers
                 null, CancellationToken.None);
             return Ok();
         }
+        
+        [HttpPost]
+        public async Task<IActionResult> UploadFile(IFormFile file)
+        {
+            var response = await _amazonS3.PutObjectAsync(new PutObjectRequest
+            {
+                BucketName = _bucketName,
+                InputStream = file.OpenReadStream(),
+                Key = $"photos/{file.FileName}"
+            }, CancellationToken.None);
+            var versionId = response.VersionId;
+            return Ok(versionId);
+        }
 
         [HttpGet]
         public async Task<IActionResult> ListFiles()
